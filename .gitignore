@@ -24,6 +24,11 @@ ScreenShot_*.png
 # 修改需求原始图片（已复制到 resources/）
 修改需求/*.png
 
+# Personal/private files
+.obsidian/
+.workbuddy/memory/
+demand.md
+
 # Electron
 *.dmg
 *.zip
