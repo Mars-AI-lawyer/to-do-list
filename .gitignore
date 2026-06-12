@@ -18,9 +18,11 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Temp files
-*.tmp
-*.temp
+# Temp screenshots (copied to docs/images/)
+ScreenShot_*.png
+
+# 修改需求原始图片（已复制到 resources/）
+修改需求/*.png
 
 # Electron
 *.dmg
