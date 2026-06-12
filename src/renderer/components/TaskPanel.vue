@@ -84,6 +84,12 @@ onUnmounted(() => {
     <div class="panel-header">
       <h2 class="panel-title">待办事项</h2>
       <div class="header-right">
+        <button v-if="archivedCount > 0" class="archive-header-btn" @click="showArchive = !showArchive" :class="{ active: showArchive }" title="已归档">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 5h16M4 5v10a2 2 0 002 2h8a2 2 0 002-2V5M8 5V3a1 1 0 011-1h2a1 1 0 011 1v2"/>
+          </svg>
+          <span class="archive-badge">{{ archivedCount }}</span>
+        </button>
         <span class="task-count" v-if="activeCount > 0">{{ activeCount }}</span>
         <button class="close-btn" @click="handleClose" title="收起">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -124,15 +130,11 @@ onUnmounted(() => {
       />
 
       <!-- 归档区域 -->
-      <div v-if="archivedTasks.length > 0" class="archive-section">
-        <button class="archive-toggle" @click="showArchive = !showArchive">
-          <svg :class="{ 'rotate-90': showArchive }" viewBox="0 0 20 20" width="12" height="12" fill="currentColor">
-            <path d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"/>
-          </svg>
+      <div v-if="archivedTasks.length > 0 && showArchive" class="archive-section">
+        <div class="archive-divider">
           <span>已归档</span>
-          <span class="archive-count">{{ archivedCount }}</span>
-        </button>
-        <div v-if="showArchive" class="archive-list">
+        </div>
+        <div class="archive-list">
           <TaskItem
             v-for="task in archivedTasks"
             :key="task.id"
@@ -307,45 +309,75 @@ onUnmounted(() => {
   margin: 0;
 }
 
-.archive-section {
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  margin-top: 8px;
-}
-
-.archive-toggle {
+.archive-header-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 10px 16px;
-  font-size: 13px;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
   color: #6e6e73;
+  background: rgba(0, 0, 0, 0.04);
+  border: none;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.archive-toggle:hover {
-  background: rgba(0, 0, 0, 0.03);
+.archive-header-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
   color: #1d1d1f;
 }
 
-.archive-toggle svg {
-  transition: transform 0.2s ease;
+.archive-header-btn.active {
+  background: rgba(0, 122, 255, 0.1);
+  color: #007aff;
 }
 
-.archive-toggle .rotate-90 {
-  transform: rotate(90deg);
-}
-
-.archive-count {
-  font-size: 11px;
+.archive-badge {
+  font-size: 10px;
   font-weight: 600;
   color: #fff;
   background: #8e8e93;
-  padding: 1px 7px;
-  border-radius: 10px;
-  min-width: 20px;
+  padding: 0 5px;
+  border-radius: 8px;
+  min-width: 16px;
   text-align: center;
+}
+
+.archive-header-btn.active .archive-badge {
+  background: #007aff;
+}
+
+.archive-section {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  margin-top: 4px;
+}
+
+.archive-divider {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #8e8e93;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.archive-divider::before,
+.archive-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.archive-divider::before {
+  margin-right: 8px;
+}
+
+.archive-divider::after {
+  margin-left: 8px;
 }
 
 .archive-list {

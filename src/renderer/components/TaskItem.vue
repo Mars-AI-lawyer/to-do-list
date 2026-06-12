@@ -24,8 +24,9 @@ const handlePin = () => {
   taskStore.pinTask(props.task.id);
 };
 
-const handleContextMenu = (e: MouseEvent) => {
-  e.preventDefault();
+const handleTitleClick = () => {
+  // 已完成任务不允许编辑
+  if (props.task.completed) return;
   isEditing.value = true;
   editTitle.value = props.task.title;
   nextTick(() => {
@@ -73,7 +74,7 @@ const handleKeydown = (e: KeyboardEvent) => {
         @keydown="handleKeydown"
       />
     </div>
-    <span v-else class="task-title" :class="{ 'line-through': task.completed }" @click="handleToggle" @contextmenu="handleContextMenu">
+    <span v-else class="task-title" :class="{ 'line-through': task.completed }" @click="handleTitleClick">
       {{ task.title }}
     </span>
 
@@ -137,9 +138,16 @@ const handleKeydown = (e: KeyboardEvent) => {
   flex: 1;
   font-size: 14px;
   color: #1d1d1f;
-  cursor: pointer;
+  cursor: text;
   word-break: break-word;
   line-height: 1.4;
+}
+
+.task-title:hover {
+  background: rgba(0, 122, 255, 0.06);
+  border-radius: 4px;
+  margin: -2px -4px;
+  padding: 2px 4px;
 }
 
 .task-title.line-through {

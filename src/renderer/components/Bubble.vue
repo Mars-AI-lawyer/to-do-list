@@ -64,10 +64,12 @@ const handleMouseUp = (e: MouseEvent) => {
       @mousedown.prevent="handleMouseDown"
       title="按住拖拽移动，点击展开任务列表"
     >
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 11l3 3L22 4"/>
-        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-      </svg>
+      <img
+        class="bubble-icon"
+        src="/bubble-icon.png"
+        alt="TodoList"
+        draggable="false"
+      />
     </div>
   </div>
 </template>
@@ -75,18 +77,19 @@ const handleMouseUp = (e: MouseEvent) => {
 <style scoped>
 .bubble-wrapper {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
 }
 
 .bubble {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  overflow: hidden;
 
   /* 干净的纯白底色 + 极淡蓝灰渐变，任何背景下都可见 */
   background: linear-gradient(
@@ -102,10 +105,17 @@ const handleMouseUp = (e: MouseEvent) => {
     0 6px 20px rgba(0, 122, 255, 0.12),
     0 3px 10px rgba(0, 0, 0, 0.08);
 
-  color: #007aff;
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   user-select: none;
   -webkit-app-region: no-drag;
+}
+
+.bubble-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  pointer-events: none;
+  image-rendering: pixelated;
 }
 
 .bubble:hover {
@@ -120,7 +130,6 @@ const handleMouseUp = (e: MouseEvent) => {
     0 10px 28px rgba(0, 122, 255, 0.18),
     0 4px 12px rgba(0, 0, 0, 0.1);
   transform: scale(1.1);
-  color: #0051d4;
 }
 
 .bubble:active {

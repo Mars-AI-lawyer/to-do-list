@@ -6,7 +6,7 @@ let mainWindow: BrowserWindow | null = null;
 let isExpanded = false;
 
 // 收起时的尺寸
-const COLLAPSED_SIZE = { width: 48, height: 48 };
+const COLLAPSED_SIZE = { width: 44, height: 44 };
 // 展开时的尺寸
 const EXPANDED_SIZE = { width: 320, height: 480 };
 
