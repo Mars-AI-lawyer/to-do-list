@@ -139,6 +139,7 @@ onUnmounted(() => {
             v-for="task in archivedTasks"
             :key="task.id"
             :task="task"
+            :archived="true"
           />
         </div>
       </div>

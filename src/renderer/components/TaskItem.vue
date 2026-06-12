@@ -5,6 +5,7 @@ import { ref, nextTick } from 'vue';
 
 const props = defineProps<{
   task: Task;
+  archived?: boolean;
 }>();
 
 const taskStore = useTaskStore();
@@ -18,6 +19,11 @@ const handleToggle = () => {
 
 const handleDelete = () => {
   taskStore.deleteTasks([props.task.id]);
+};
+
+const handleRestore = () => {
+  // 取消完成状态，移回主列表
+  taskStore.toggleTask(props.task.id);
 };
 
 const handlePin = () => {
@@ -79,16 +85,33 @@ const handleKeydown = (e: KeyboardEvent) => {
     </span>
 
     <div class="task-actions">
-      <button class="action-btn pin" @click="handlePin" :title="task.pinned ? '取消置顶' : '置顶'">
-        <svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor" :class="{ active: task.pinned }">
-          <path d="M13.33 10V3.33h.84V1.67H5.83v1.67h.84V10l-1.67 1.67v1.66h4.35v5h.84v-5h4.35v-1.66L13.33 10z"/>
-        </svg>
-      </button>
-      <button class="action-btn delete" @click="handleDelete" title="删除">
-        <svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor">
-          <path d="M5 15.83c0 .92.75 1.67 1.67 1.67h6.67c.92 0 1.67-.75 1.67-1.67V5.83H5v10zM15.83 3.33h-2.91l-.42-.42h-5l-.42.42H4.17v1.67h11.67V3.33z"/>
-        </svg>
-      </button>
+      <!-- 归档区：显示恢复+删除，不显示置顶 -->
+      <template v-if="archived">
+        <button class="action-btn restore" @click="handleRestore" title="恢复到主列表">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 10a6 6 0 1012 0 6 6 0 00-12 0z"/>
+            <path d="M7.5 10h5M10 7.5v5"/>
+          </svg>
+        </button>
+        <button class="action-btn delete" @click="handleDelete" title="永久删除">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor">
+            <path d="M5 15.83c0 .92.75 1.67 1.67 1.67h6.67c.92 0 1.67-.75 1.67-1.67V5.83H5v10zM15.83 3.33h-2.91l-.42-.42h-5l-.42.42H4.17v1.67h11.67V3.33z"/>
+          </svg>
+        </button>
+      </template>
+      <!-- 主列表：显示置顶+删除 -->
+      <template v-else>
+        <button class="action-btn pin" @click="handlePin" :title="task.pinned ? '取消置顶' : '置顶'">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor" :class="{ active: task.pinned }">
+            <path d="M13.33 10V3.33h.84V1.67H5.83v1.67h.84V10l-1.67 1.67v1.66h4.35v5h.84v-5h4.35v-1.66L13.33 10z"/>
+          </svg>
+        </button>
+        <button class="action-btn delete" @click="handleDelete" title="删除">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor">
+            <path d="M5 15.83c0 .92.75 1.67 1.67 1.67h6.67c.92 0 1.67-.75 1.67-1.67V5.83H5v10zM15.83 3.33h-2.91l-.42-.42h-5l-.42.42H4.17v1.67h11.67V3.33z"/>
+          </svg>
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -205,6 +228,10 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 .action-btn.delete:hover {
   color: #ff3b30;
+}
+
+.action-btn.restore:hover {
+  color: #007aff;
 }
 
 /* 深色模式 */
