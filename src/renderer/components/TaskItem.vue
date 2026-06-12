@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import type { Task } from '@shared/types';
 import { useTaskStore } from '../stores/taskStore';
+import { ref, nextTick } from 'vue';
 
 const props = defineProps<{
   task: Task;
 }>();
 
 const taskStore = useTaskStore();
+const isEditing = ref(false);
+const editTitle = ref('');
+const editInputRef = ref<HTMLInputElement | null>(null);
 
 const handleToggle = () => {
   taskStore.toggleTask(props.task.id);
@@ -18,6 +22,34 @@ const handleDelete = () => {
 
 const handlePin = () => {
   taskStore.pinTask(props.task.id);
+};
+
+const handleContextMenu = (e: MouseEvent) => {
+  e.preventDefault();
+  isEditing.value = true;
+  editTitle.value = props.task.title;
+  nextTick(() => {
+    editInputRef.value?.focus();
+    editInputRef.value?.select();
+  });
+};
+
+const handleSave = async () => {
+  if (isEditing.value) {
+    const trimmed = editTitle.value.trim();
+    if (trimmed && trimmed !== props.task.title) {
+      await taskStore.updateTask(props.task.id, { title: trimmed });
+    }
+    isEditing.value = false;
+  }
+};
+
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Enter') {
+    handleSave();
+  } else if (e.key === 'Escape') {
+    isEditing.value = false;
+  }
 };
 </script>
 
@@ -32,7 +64,16 @@ const handlePin = () => {
       </svg>
     </button>
 
-    <span class="task-title" :class="{ 'line-through': task.completed }" @click="handleToggle">
+    <div v-if="isEditing" class="edit-wrapper">
+      <input
+        ref="editInputRef"
+        v-model="editTitle"
+        class="edit-input"
+        @blur="handleSave"
+        @keydown="handleKeydown"
+      />
+    </div>
+    <span v-else class="task-title" :class="{ 'line-through': task.completed }" @click="handleToggle" @contextmenu="handleContextMenu">
       {{ task.title }}
     </span>
 
@@ -104,6 +145,23 @@ const handlePin = () => {
 .task-title.line-through {
   text-decoration: line-through;
   color: #aeaeb2;
+}
+
+.edit-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 2px 4px;
+  border: 1px solid #007aff;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #1d1d1f;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
 }
 
 .task-actions {

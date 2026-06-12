@@ -64,8 +64,9 @@ const handleMouseUp = (e: MouseEvent) => {
       @mousedown.prevent="handleMouseDown"
       title="按住拖拽移动，点击展开任务列表"
     >
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 5v14M5 12h14"/>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11l3 3L22 4"/>
+        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
       </svg>
     </div>
   </div>
@@ -74,8 +75,8 @@ const handleMouseUp = (e: MouseEvent) => {
 <style scoped>
 .bubble-wrapper {
   position: relative;
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
 }
 
 .bubble {
